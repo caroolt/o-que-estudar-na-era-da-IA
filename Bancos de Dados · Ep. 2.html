@@ -1,0 +1,428 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bancos de Dados · Ep. 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: cartoon "sticker" study handout over a royal-blue glow, matching Carolina's avatar and the Site 3D prompts page. Chapters follow the video order. Single dark look by choice. */
+:root {
+  --bg-deep: #061a5c; --bg-glow: #1673f0; --navy: #1e2c66; --ink: #0b0d1a;
+  --neon: #3fb4ff; --paper: #fff8ef; --text: #eef4ff; --muted: #b8c9ef; --code-bg: #0c1640;
+  --note: #3a3f5c; --soft: #e3ecff; --ok: #12915e; --bad: #d23a2c;
+  --display: "Fredoka", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg-deep); }
+body { background: radial-gradient(ellipse 70% 40% at 50% 8%, var(--bg-glow) 0%, #0b3fb8 35%, var(--bg-deep) 75%) var(--bg-deep); color: var(--text); font: 400 17px/1.65 var(--body); padding-inline: 20px; padding-block: 0 110px; }
+.wrap { max-width: 820px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.1; margin: 0; }
+p { margin: 0; }
+a { color: var(--neon); }
+code, pre, .mono { font-family: var(--mono); }
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 4px; }
+strong { font-weight: 700; }
+
+/* header */
+header.hero { padding-block: 48px 32px; display: grid; gap: 18px; }
+.hero-top { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; position: relative; }
+.avatar { width: 160px; height: 160px; border-radius: 50%; border: 5px solid var(--ink); box-shadow: 6px 6px 0 var(--ink), 0 0 50px rgba(63,180,255,.55); object-fit: cover; background: var(--navy); }
+.brk { position: absolute; right: 0; top: -14px; font: 600 60px var(--mono); color: var(--neon); text-shadow: 0 0 18px rgba(63,180,255,.9); opacity: .5; pointer-events: none; user-select: none; }
+.eyebrow { font: 600 14px var(--mono); color: var(--neon); text-shadow: 0 0 12px rgba(63,180,255,.8); letter-spacing: .04em; }
+h1 { font-size: clamp(36px, 7vw, 58px); font-weight: 700; color: #fff; text-shadow: 3px 3px 0 var(--ink); margin: 6px 0 10px; }
+.lede { font-size: 18px; color: var(--muted); max-width: 60ch; }
+.lede strong { color: #fff; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 13px var(--display); padding: 3px 12px; border: 3px solid var(--ink); border-radius: 999px; background: var(--navy); color: #fff; }
+
+/* table of contents keyed to the video */
+nav.toc { margin-top: 16px; background: var(--paper); color: var(--ink); border: 4px solid var(--ink); border-radius: 20px; box-shadow: 7px 7px 0 var(--ink); padding: 14px 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 24px; }
+nav.toc a { display: flex; gap: 12px; align-items: baseline; padding: 8px 0; border-bottom: 2px dashed #d5d9ea; color: var(--ink); text-decoration: none; font-weight: 600; }
+nav.toc a:hover { color: #0b5fd6; }
+nav.toc .t { font: 700 13px var(--mono); color: #0b5fd6; font-variant-numeric: tabular-nums; min-width: 3.4em; }
+
+/* chapters */
+section { padding-block: 52px 4px; display: grid; gap: 18px; }
+section > * { min-width: 0; }
+.chap { display: flex; align-items: center; gap: 12px; }
+.chap .n { font: 700 14px var(--display); background: var(--neon); color: var(--ink); border: 3px solid var(--ink); border-radius: 999px; padding: 2px 12px; }
+.chap .ts { margin-left: auto; font: 600 13px var(--mono); color: var(--neon); }
+h2 { font-size: clamp(30px, 5vw, 40px); font-weight: 700; color: #fff; text-shadow: 3px 3px 0 var(--ink); }
+h3 { font-size: 22px; font-weight: 600; color: #fff; margin-top: 6px; }
+.prose { display: grid; gap: 14px; }
+.prose p, .prose li { max-width: 66ch; }
+.prose strong { color: #fff; }
+.prose em { color: var(--neon); font-style: normal; }
+.prose code { font-size: 14px; color: var(--neon); }
+ul.clean { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.quote { background: var(--navy); border: 3px solid var(--ink); border-radius: 16px; box-shadow: 5px 5px 0 var(--ink); padding: 14px 18px; font: 600 18px/1.45 var(--display); color: #fff; }
+
+/* code */
+pre { margin: 0; background: var(--code-bg); color: #e6f0ff; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--ink); padding: 16px 18px; overflow-x: auto; font-size: 14px; line-height: 1.65; }
+.k { color: var(--neon); font-weight: 600; } .c { color: #8ea4d6; } .s { color: #7ee2b1; }
+
+/* sticker surfaces */
+.tbl, .letter, .transfer, .servers, .outcome, .q, details { background: var(--paper); color: var(--ink); border: 4px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--ink); }
+
+/* tables */
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 15.5px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 2px solid #e2e5f0; vertical-align: top; }
+th { font: 600 14px var(--display); letter-spacing: .04em; color: #fff; background: var(--navy); border-bottom: 3px solid var(--ink); }
+tr:last-child td { border-bottom: 0; }
+td code { font-size: 13.5px; background: var(--soft); border: 2px solid var(--ink); padding: 0 6px; border-radius: 6px; }
+
+/* letters (ACID, BASE, CAP) */
+.letters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
+.letter { padding: 16px; display: grid; gap: 6px; align-content: start; }
+.letter b { font: 700 40px/1 var(--display); color: var(--ink); background: var(--neon); border: 3px solid var(--ink); border-radius: 12px; width: max-content; padding: 2px 12px; }
+.letter strong { font: 600 19px var(--display); }
+.letter p { font-size: 15px; color: var(--note); }
+
+/* transfer + servers diagrams */
+.transfer, .servers { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; padding: 18px; text-align: center; }
+.acct, .srv { border: 3px solid var(--ink); border-radius: 12px; padding: 12px; background: var(--soft); }
+.acct small, .srv small { display: block; color: var(--note); font-size: 13px; font-weight: 600; }
+.acct span, .srv span { font: 700 22px var(--mono); font-variant-numeric: tabular-nums; }
+.arrow, .wire { font: 700 14px var(--mono); color: #0b5fd6; }
+.outcomes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.outcome { padding: 14px 16px; font-size: 15.5px; color: var(--note); }
+.outcome b { display: inline-block; font: 600 15px var(--display); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 1px 12px; margin-bottom: 8px; }
+.outcome.good b { background: var(--ok); } .outcome.bad b { background: var(--bad); }
+
+/* impedance mismatch diagram */
+.mismatch { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr); gap: 16px; align-items: center; }
+.tables { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tables div { font: 600 14px var(--mono); padding: 10px; border: 3px solid var(--ink); border-radius: 10px; background: var(--paper); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); text-align: center; }
+.swap { font: 700 34px var(--mono); color: var(--neon); text-shadow: 0 0 14px rgba(63,180,255,.8); text-align: center; line-height: 1; }
+
+/* quiz */
+.quiz { display: grid; gap: 18px; }
+.q { padding: 16px; display: grid; gap: 12px; }
+.q p { font: 600 18px var(--display); }
+.q .opts { display: flex; gap: 10px; flex-wrap: wrap; }
+.q button { font: 700 15px var(--display); padding: 6px 20px; border-radius: 999px; border: 3px solid var(--ink); background: var(--neon); color: var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: transform .1s, box-shadow .1s; }
+.q button:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.q button:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.q button.right { background: var(--ok); color: #fff; }
+.q button.wrong { background: var(--bad); color: #fff; }
+.q .why { font-size: 15.5px; color: var(--note); }
+.score { font: 600 14px var(--mono); color: var(--neon); }
+
+/* interview Q&A */
+.qa { display: grid; gap: 16px; }
+summary { cursor: pointer; padding: 14px 16px; font: 600 17px var(--display); list-style: none; display: flex; gap: 10px; align-items: baseline; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; font: 700 15px/22px var(--mono); flex: none; width: 24px; height: 24px; text-align: center; background: var(--neon); border: 2px solid var(--ink); border-radius: 50%; }
+details[open] summary::before { content: "−"; }
+details .a { padding: 0 18px 16px 50px; color: var(--note); display: grid; gap: 8px; }
+details .a strong { color: var(--ink); }
+
+/* checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.check li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.check li::before { content: "?"; font: 700 15px/26px var(--display); width: 30px; height: 30px; text-align: center; border-radius: 50%; border: 3px solid var(--ink); background: var(--neon); color: var(--ink); }
+.check code { color: var(--neon); }
+
+dl.gloss { display: grid; grid-template-columns: minmax(140px, auto) 1fr; gap: 10px 20px; margin: 0; background: var(--paper); color: var(--ink); border: 4px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--ink); padding: 18px 22px; }
+dl.gloss dt { font: 600 14px var(--mono); color: #0b5fd6; }
+dl.gloss dd { margin: 0; color: var(--note); font-size: 15.5px; }
+
+footer { margin-top: 64px; padding-top: 24px; border-top: 3px dashed rgba(184,201,239,.35); color: var(--muted); font-size: 15px; display: grid; gap: 6px; }
+footer strong { color: #fff; }
+
+@media (max-width: 560px) {
+  .hero-top { grid-template-columns: 1fr; justify-items: start; }
+  .avatar { width: 116px; height: 116px; } .brk { font-size: 40px; top: 8px; }
+  .mismatch, .transfer, .servers { grid-template-columns: 1fr; }
+  .swap { transform: rotate(90deg); }
+  dl.gloss { grid-template-columns: 1fr; gap: 2px 0; } dl.gloss dd { margin-bottom: 10px; }
+  body { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .q button { transition: none; } }
+
+/* channel watermark: fixed badge, bottom right */
+.wm { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; border: 3px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); font: 700 15px var(--display); text-decoration: none; transition: transform .1s, box-shadow .1s; }
+.wm:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+.wm i { width: 30px; height: 21px; border-radius: 6px; background: #ff0033; position: relative; flex: none; }
+.wm i::after { content: ""; position: absolute; left: 12px; top: 5px; border-left: 9px solid #fff; border-top: 5.5px solid transparent; border-bottom: 5.5px solid transparent; }
+.yt { display: inline-flex; align-items: center; gap: 8px; width: max-content; font: 700 15px var(--display); color: var(--ink); background: var(--neon); border: 3px solid var(--ink); border-radius: 999px; padding: 4px 16px; box-shadow: 3px 3px 0 var(--ink); text-decoration: none; }
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="hero-top">
+    <span class="brk" aria-hidden="true">{ }</span>
+    <img class="avatar" src="data:image/jpeg;base64,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" alt="Avatar da Carolina">
+    <div>
+      <div class="eyebrow">&lt;o que estudar na era da IA · ep. 2 /&gt;</div>
+      <h1>Como escolher o banco certo</h1>
+      <p class="lede">A IA sugere um banco em dois segundos. <strong>Saber se ela está certa é com você.</strong> Material de apoio do vídeo: as perguntas que você faz antes de escolher, por que SQL é o ponto de partida, os 5 tipos de NoSQL e como os dois convivem no mesmo sistema.</p>
+    </div>
+  </div>
+  <a class="yt" href="https://www.youtube.com/@CaroolDev" target="_blank" rel="noopener">▶ youtube.com/@CaroolDev</a>
+  <div class="meta"><span class="chip">Critérios de escolha</span><span class="chip">SQL como padrão</span><span class="chip">Escala vertical vs horizontal</span><span class="chip">5 tipos de NoSQL</span><span class="chip">Postgres + Redis</span></div>
+  <nav class="toc" aria-label="Capítulos">
+    <a href="#criterios"><span class="t">0:29</span>O que olhar antes de escolher</a>
+    <a href="#sql"><span class="t">1:09</span>Por que SQL é o padrão</a>
+    <a href="#quando-nosql"><span class="t">1:54</span>Quando ir pra NoSQL</a>
+    <a href="#tipos"><span class="t">2:33</span>Os 5 tipos de NoSQL</a>
+    <a href="#fluxo"><span class="t">4:05</span>O fluxo de decisão</a>
+    <a href="#juntos"><span class="t">4:44</span>SQL e NoSQL juntos</a>
+    <a href="#ia"><span class="t">5:09</span>E a IA nisso tudo?</a>
+    <a href="#entrevista"><span class="t">extra</span>Perguntas de entrevista</a>
+  </nav>
+</header>
+
+<section id="criterios">
+  <div class="chap"><span class="n">01</span><span class="ts">0:29</span></div>
+  <h2>O que olhar antes de escolher</h2>
+  <div class="prose">
+    <p>Antes de abrir a documentação de qualquer banco, responda cinco perguntas sobre o <strong>seu</strong> sistema. Quase toda escolha ruim de banco vem de pular essa etapa e escolher pela ferramenta da moda.</p>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Pergunta</th><th>O que observar</th><th>Puxa pra</th></tr>
+    <tr><td><strong>1 · Formato dos dados</strong></td><td>Os registros têm sempre os mesmos campos e se relacionam (usuário, pedido, item)? Ou cada registro tem uma estrutura diferente?</td><td>Tabelas → SQL. Estrutura variável → documento.</td></tr>
+    <tr><td><strong>2 · Padrão de acesso</strong></td><td>Como você busca: por <code>id</code>, por filtros combinados, por texto livre, por similaridade?</td><td>id → chave-valor. Filtros e JOINs → SQL. Texto → Elasticsearch. Similaridade → vetorial.</td></tr>
+    <tr><td><strong>3 · Latência</strong></td><td>Quão rápido a resposta precisa chegar ao cliente? Milissegundos numa tela de checkout, segundos num relatório.</td><td>Muito baixa → cache em memória (Redis) na frente.</td></tr>
+    <tr><td><strong>4 · CAP</strong></td><td>Se a rede cair entre dois servidores, você prefere negar a request ou responder com um dado talvez desatualizado?</td><td>Negar → CP (dinheiro, estoque). Responder → AP (likes, feed).</td></tr>
+    <tr><td><strong>5 · Leituras vs escritas</strong></td><td>Qual a proporção? Um blog lê muito e escreve pouco; telemetria e logs escrevem sem parar.</td><td>Muita leitura → réplicas e cache. Escrita massiva → bancos otimizados pra escrita.</td></tr>
+  </table></div>
+  <div class="prose">
+    <h3>Por que escrita em SQL tende a ser mais lenta</h3>
+    <p>Num banco relacional, cada escrita passa por validação de schema, checagem de chaves estrangeiras, atualização de todos os índices e gravação no log de transações (WAL) antes do commit. É exatamente isso que garante o ACID, mas tem custo. Bancos como Cassandra gravam primeiro num log sequencial e numa estrutura em memória, e organizam o resto depois, por isso aguentam volumes de escrita muito maiores.</p>
+  </div>
+</section>
+
+<section id="sql">
+  <div class="chap"><span class="n">02</span><span class="ts">1:09</span></div>
+  <h2>Por que SQL é o padrão</h2>
+  <div class="prose">
+    <p class="quote">Comece com SQL. Um Postgres, por exemplo.</p>
+    <ul class="clean">
+      <li><strong>A maioria dos negócios cabe em tabelas.</strong> Um usuário tem N anúncios, um pedido tem N itens. Relações 1:N e N:N são o caso comum, e é exatamente isso que o modelo relacional resolve.</li>
+      <li><strong>É ACID.</strong> Transação tudo ou nada e regras (chave estrangeira, <code>UNIQUE</code>, <code>CHECK</code>) que o banco garante por você.</li>
+      <li><strong>40 a 50 anos de padrão.</strong> Ferramentas de backup, migração, monitoramento, ORMs, hospedagem gerenciada em qualquer nuvem, e gente no mercado que sabe operar.</li>
+    </ul>
+  </div>
+<pre><span class="k">CREATE TABLE</span> usuario (
+  id    <span class="k">BIGSERIAL PRIMARY KEY</span>,
+  nome  <span class="k">TEXT NOT NULL</span>
+);
+
+<span class="k">CREATE TABLE</span> anuncio (
+  id          <span class="k">BIGSERIAL PRIMARY KEY</span>,
+  titulo      <span class="k">TEXT NOT NULL</span>,
+  preco       <span class="k">NUMERIC</span>(10,2) <span class="k">CHECK</span> (preco &gt;= 0),
+  usuario_id  <span class="k">BIGINT NOT NULL REFERENCES</span> usuario(id)  <span class="c">-- 1 usuário : N anúncios</span>
+);
+
+<span class="c">-- query "complexa" que o SQL resolve numa linha: quem anuncia mais caro, em média?</span>
+<span class="k">SELECT</span> u.nome, <span class="k">AVG</span>(a.preco) <span class="k">AS</span> media
+<span class="k">FROM</span> usuario u <span class="k">JOIN</span> anuncio a <span class="k">ON</span> a.usuario_id = u.id
+<span class="k">GROUP BY</span> u.nome <span class="k">ORDER BY</span> media <span class="k">DESC LIMIT</span> 10;</pre>
+  <div class="prose">
+    <h3>SQL brilha quando</h3>
+    <ul class="clean">
+      <li>você precisa de <strong>queries complexas</strong> (JOIN, agregação, filtros combinados que você ainda nem sabe quais serão);</li>
+      <li>você precisa de <strong>consistência forte</strong> (dinheiro, estoque, reservas);</li>
+      <li>é a <strong>lógica de negócio central</strong> do sistema, a parte que não pode errar.</li>
+    </ul>
+    <h3>"SQL não escala" é mito</h3>
+    <p>O YouTube roda em MySQL, escalado horizontalmente com o Vitess (que nasceu lá dentro). Instagram, Shopify e GitHub também apoiam o núcleo em bancos relacionais. Escalar SQL dá trabalho, mas é feito todo dia: réplicas de leitura, cache, particionamento e sharding. O ponto é que o esforço aparece cedo e é responsabilidade sua.</p>
+  </div>
+</section>
+
+<section id="quando-nosql">
+  <div class="chap"><span class="n">03</span><span class="ts">1:54</span></div>
+  <h2>Quando ir pra NoSQL</h2>
+  <div class="prose">
+    <p>São dois motivos principais.</p>
+    <h3>1 · Impedance mismatch</h3>
+    <p>Quando o dado não se traduz bem pra tabela: cada registro tem campos diferentes, ou o objeto é sempre lido e gravado inteiro. Forçar isso em tabelas gera dezenas de colunas vazias ou JOINs pra remontar o objeto toda vez.</p>
+    <h3>2 · Escala</h3>
+  </div>
+  <div class="tbl"><table>
+    <tr><th></th><th>Escala vertical (scale up)</th><th>Escala horizontal (scale out)</th></tr>
+    <tr><td><strong>Como</strong></td><td>Troca por uma máquina maior: mais CPU, RAM, disco.</td><td>Adiciona mais máquinas e divide os dados entre elas.</td></tr>
+    <tr><td><strong>Típico de</strong></td><td>SQL tradicional (um primário que recebe as escritas).</td><td>Muitos NoSQL (Cassandra, DynamoDB, MongoDB com sharding).</td></tr>
+    <tr><td><strong>Vantagem</strong></td><td>Simples. Nada muda na aplicação.</td><td>Cresce quase sem teto; uma máquina caindo não derruba tudo.</td></tr>
+    <tr><td><strong>Problema</strong></td><td>Custo sobe rápido e tem limite físico: existe a maior máquina à venda.</td><td>Escrever em vários nós mantendo consistência é difícil; você aceita trade-offs de CAP.</td></tr>
+  </table></div>
+</section>
+
+<section id="tipos">
+  <div class="chap"><span class="n">04</span><span class="ts">2:33</span></div>
+  <h2>Os 5 tipos de NoSQL</h2>
+  <div class="tbl"><table>
+    <tr><th>Tipo</th><th>Guarda como</th><th>Bom pra</th><th>Exemplos</th></tr>
+    <tr><td><strong>Chave-valor</strong></td><td>chave → valor</td><td>cache, sessão, feature flag, rate limit, chave de idempotência, recomendação pré-computada</td><td>Redis, DynamoDB</td></tr>
+    <tr><td><strong>Documento</strong></td><td>JSON / documento</td><td>schema flexível, user settings, catálogo com produtos diferentes, MVPs</td><td>MongoDB, Firestore</td></tr>
+    <tr><td><strong>Grafo</strong></td><td>nós + arestas</td><td>quando a relação importa tanto quanto o dado: rede social, recomendação, fraude</td><td>Neo4j</td></tr>
+    <tr><td><strong>Colunar</strong></td><td>por coluna, não por linha</td><td>agregações sobre volumes gigantes, big data, data warehouse</td><td>Cassandra, Redshift</td></tr>
+    <tr><td><strong>Vetorial</strong></td><td>vetores (embeddings)</td><td>busca por similaridade em texto e imagem, RAG</td><td>Pinecone</td></tr>
+  </table></div>
+  <div class="prose">
+    <h3>Chave-valor: o mais simples e o mais usado</h3>
+    <p>Você só consegue buscar pela chave, mas em troca a leitura é quase instantânea. Uma chave de idempotência, por exemplo, guarda o id de um pagamento já processado para que um clique duplo não cobre duas vezes.</p>
+  </div>
+<pre><span class="c"># Redis: cache com expiração e rate limit</span>
+SET user:42:premium true EX 300        <span class="c"># expira em 5 min</span>
+GET user:42:premium
+
+INCR ratelimit:ip:200.1.2.3            <span class="c"># conta requests</span>
+EXPIRE ratelimit:ip:200.1.2.3 60       <span class="c"># janela de 1 minuto</span>
+
+SET pagamento:abc123 processado NX EX 86400  <span class="c"># idempotência: só grava se não existir</span></pre>
+  <div class="prose">
+    <h3>Documento: cada registro com os campos que existem</h3>
+  </div>
+<pre>{ <span class="s">"produto"</span>: <span class="s">"BOLSA"</span>,    <span class="s">"tipo_alca"</span>: <span class="s">"couro"</span>, <span class="s">"cor"</span>: <span class="s">"preto"</span> }
+{ <span class="s">"produto"</span>: <span class="s">"TENIS"</span>,    <span class="s">"material_cadarco"</span>: <span class="s">"nylon"</span>, <span class="s">"numero"</span>: 42 }
+{ <span class="s">"produto"</span>: <span class="s">"NOTEBOOK"</span>, <span class="s">"memoria_ram"</span>: <span class="s">"16gb"</span>, <span class="s">"cpu"</span>: <span class="s">"i7"</span> }</pre>
+  <div class="prose">
+    <p>No relacional, isso viraria uma tabela com uma coluna para cada atributo possível de cada produto, quase todas vazias. Vale lembrar que o Postgres tem a coluna <code>JSONB</code>: muitas vezes dá pra guardar só a parte variável como documento e manter o resto relacional, sem trazer outro banco.</p>
+    <h3>Grafo: o tipo mais raro na prática</h3>
+    <p>Brilha em perguntas como "amigos de amigos que curtiram X" ou "essa conta está a dois passos de três contas fraudulentas?". Em SQL isso vira JOINs recursivos que ficam lentos a cada nível.</p>
+    <h3>Colunar: somar abril inteiro</h3>
+    <p>Guardando por coluna, uma consulta como "soma de tudo que foi vendido em abril" lê só a coluna <code>valor</code> (e a de data), em vez de cada linha inteira. Colunas também comprimem muito bem.</p>
+    <p><strong>Detalhe que vale saber:</strong> o Cassandra é tecnicamente um banco <em>wide-column</em>, famoso por aguentar escrita massiva (séries temporais, eventos, analytics em tempo real). Já os colunares de data warehouse, como Redshift, BigQuery e ClickHouse, são os otimizados para agregações gigantes.</p>
+    <h3>Vetorial: a base do RAG</h3>
+    <p>Um modelo transforma texto ou imagem num vetor (embedding). Conteúdos parecidos ficam próximos. No RAG, você busca os trechos mais parecidos com a pergunta e os entrega ao modelo como contexto. Para começar, a extensão <code>pgvector</code> faz isso dentro do próprio Postgres.</p>
+  </div>
+</section>
+
+<section id="fluxo">
+  <div class="chap"><span class="n">05</span><span class="ts">4:05</span></div>
+  <h2>O fluxo de decisão</h2>
+  <ul class="check">
+    <li><strong>Comece com SQL</strong> (Postgres) como fonte da verdade.</li>
+    <li>Precisa de mais performance de leitura? Coloque um <strong>cache</strong> do lado (Redis).</li>
+    <li>Analytics pesado? <strong>Colunar</strong> (Cassandra, Redshift, BigQuery, ClickHouse).</li>
+    <li>Série temporal (métricas, sensores)? <strong>Banco de séries temporais</strong> (TimescaleDB, InfluxDB).</li>
+    <li>Busca por texto com relevância e filtros? <strong>Elasticsearch</strong> / OpenSearch.</li>
+    <li>IA com embeddings? <strong>Banco vetorial</strong> (Pinecone, ou pgvector pra começar).</li>
+  </ul>
+  <div class="tbl"><table>
+    <tr><th>NoSQL entra quando você precisa de</th><th>Exemplo</th></tr>
+    <tr><td>Throughput sem consistência forte</td><td>logs, eventos, telemetria</td></tr>
+    <tr><td>Schema indefinido</td><td>MVP, user settings</td></tr>
+    <tr><td>Big data e analytics</td><td>vendas do ano inteiro, dashboards</td></tr>
+    <tr><td>Recomendação e similaridade</td><td>"quem viu isso também viu", RAG</td></tr>
+    <tr><td>Cache</td><td>sessão, "esse usuário é premium?"</td></tr>
+  </table></div>
+  <h3>Teste rápido: qual banco você usaria?</h3>
+  <div class="quiz" id="quiz">
+    <div class="q" data-a="SQL"><p>Pedidos e pagamentos de um e-commerce</p><div class="opts"><button type="button">SQL</button><button type="button">Chave-valor</button><button type="button">Documento</button><button type="button">Vetorial</button></div><div class="why" hidden>Dinheiro e estoque pedem transação ACID e consistência forte. É a lógica de negócio central.</div></div>
+    <div class="q" data-a="Chave-valor"><p>Sessão do usuário logado e rate limit da API</p><div class="opts"><button type="button">SQL</button><button type="button">Chave-valor</button><button type="button">Grafo</button><button type="button">Colunar</button></div><div class="why" hidden>Acesso sempre por uma chave, leitura muito rápida e dados que expiram. Redis é o clássico.</div></div>
+    <div class="q" data-a="Vetorial"><p>"Encontre artigos parecidos com esta pergunta" num chatbot com RAG</p><div class="opts"><button type="button">SQL</button><button type="button">Documento</button><button type="button">Grafo</button><button type="button">Vetorial</button></div><div class="why" hidden>Busca por similaridade de embeddings, não por texto exato.</div></div>
+    <div class="q" data-a="Colunar"><p>Somar o faturamento de todas as lojas por mês, sobre 5 anos de vendas</p><div class="opts"><button type="button">Chave-valor</button><button type="button">Documento</button><button type="button">Colunar</button><button type="button">Grafo</button></div><div class="why" hidden>Agregação sobre volume gigante lendo poucas colunas. Data warehouse colunar.</div></div>
+    <div class="q" data-a="Grafo"><p>Detectar contas ligadas a um grupo de contas fraudulentas</p><div class="opts"><button type="button">SQL</button><button type="button">Chave-valor</button><button type="button">Grafo</button><button type="button">Vetorial</button></div><div class="why" hidden>A relação entre as contas é o dado principal. Percorrer conexões é o forte do grafo.</div></div>
+    <div class="q" data-a="Documento"><p>Catálogo de um marketplace com produtos de atributos muito diferentes</p><div class="opts"><button type="button">Documento</button><button type="button">Grafo</button><button type="button">Colunar</button><button type="button">Vetorial</button></div><div class="why" hidden>Cada produto tem seus próprios campos. Documento evita a tabela de 100 colunas (ou use JSONB no Postgres).</div></div>
+    <p class="score" id="score" aria-live="polite">0 de 6 respondidas</p>
+  </div>
+</section>
+
+<section id="juntos">
+  <div class="chap"><span class="n">06</span><span class="ts">4:44</span></div>
+  <h2>SQL e NoSQL juntos</h2>
+  <div class="prose">
+    <p class="quote">Geralmente não é SQL ou NoSQL. São os dois.</p>
+    <p>O padrão mais comum do mercado é o <strong>cache-aside</strong>: a aplicação pergunta primeiro pro Redis; se o dado estiver lá, responde na hora; se não estiver, busca no Postgres (a fonte da verdade) e guarda no cache para a próxima vez.</p>
+  </div>
+<pre><span class="k">async function</span> isPremium(userId) {
+  <span class="k">const</span> key = <span class="s">`user:${userId}:premium`</span>;
+  <span class="k">const</span> cached = <span class="k">await</span> redis.get(key);
+  <span class="k">if</span> (cached !== <span class="k">null</span>) <span class="k">return</span> cached === <span class="s">"true"</span>;           <span class="c">// cache hit: responde na hora</span>
+
+  <span class="k">const</span> { rows } = <span class="k">await</span> pg.query(                            <span class="c">// cache miss: vai na fonte da verdade</span>
+    <span class="s">"SELECT premium FROM usuario WHERE id = $1"</span>, [userId]);
+  <span class="k">const</span> premium = rows[0]?.premium ?? <span class="k">false</span>;
+  <span class="k">await</span> redis.set(key, String(premium), { EX: 300 });     <span class="c">// guarda por 5 min</span>
+  <span class="k">return</span> premium;
+}</pre>
+  <div class="prose">
+    <p>O cuidado é a <strong>invalidação</strong>: quando o usuário vira premium, apague a chave (<code>DEL user:42:premium</code>) junto da atualização no Postgres, ou ele vai ver o valor antigo até o cache expirar. Empresas 100% SQL ou 100% NoSQL existem, mas são raras.</p>
+  </div>
+</section>
+
+<section id="ia">
+  <div class="chap"><span class="n">07</span><span class="ts">5:09</span></div>
+  <h2>E a IA nisso tudo?</h2>
+  <div class="prose">
+    <p class="quote">A IA vai sugerir um banco em dois segundos. Saber se ela está certa ou não, isso é com você.</p>
+    <p>Quando a IA disser "usa MongoDB, é moderno e escala", devolva as perguntas:</p>
+  </div>
+  <ul class="check">
+    <li>Qual é o formato dos meus dados? Eles cabem em tabelas e se relacionam?</li>
+    <li>Como eu vou buscar esses dados? Por id, por filtros, por texto, por similaridade?</li>
+    <li>Qual latência o meu cliente precisa?</li>
+    <li>Se a rede cair, prefiro negar ou mostrar dado desatualizado?</li>
+    <li>Qual a proporção de leituras e escritas, e qual volume real espero no primeiro ano?</li>
+    <li>Por que não Postgres? Peça pra IA justificar o que o Postgres (com JSONB, pgvector, réplicas) não resolveria.</li>
+  </ul>
+</section>
+
+<section id="entrevista">
+  <div class="chap"><span class="n">08</span><span class="ts">extra</span></div>
+  <h2>Perguntas de entrevista</h2>
+  <div class="qa">
+    <details><summary>Como você escolheria o banco de dados para um sistema novo?</summary><div class="a"><p>Começaria pelas perguntas: formato dos dados, padrões de acesso, latência, requisitos de consistência (CAP) e proporção de leituras e escritas. Sem um motivo forte, começo com um relacional como Postgres e adiciono bancos especializados (cache, busca, analytics) quando aparecer um problema específico.</p></div></details>
+    <details><summary>Qual a diferença entre escalar vertical e horizontalmente?</summary><div class="a"><p>Vertical é trocar por uma máquina maior: simples, mas caro e com limite. Horizontal é adicionar máquinas e dividir os dados: cresce muito mais, mas traz complexidade de distribuição e trade-offs de consistência.</p></div></details>
+    <details><summary>SQL escala?</summary><div class="a"><p>Sim. Réplicas de leitura, cache, particionamento e sharding (ex.: Vitess no YouTube) levam bancos relacionais a escalas enormes. O custo é que a parte difícil, principalmente escrita distribuída, fica por sua conta.</p></div></details>
+    <details><summary>Quando usar um banco de documentos em vez de relacional?</summary><div class="a"><p>Quando o dado tem estrutura variável, é lido e gravado como um agregado inteiro e quase não tem relações entre documentos. Se só uma parte é variável, uma coluna JSONB no Postgres costuma bastar.</p></div></details>
+    <details><summary>O que é cache-aside e qual o maior risco?</summary><div class="a"><p>A aplicação consulta o cache primeiro e, no miss, busca no banco e popula o cache. O maior risco é servir dado velho: é preciso definir expiração (TTL) e invalidar a chave quando o dado muda.</p></div></details>
+    <details><summary>Por que bancos colunares são bons para analytics?</summary><div class="a"><p>Porque agregações leem poucas colunas de muitas linhas. Guardando por coluna, o banco lê só o necessário e comprime muito melhor, já que valores da mesma coluna são parecidos.</p></div></details>
+  </div>
+</section>
+
+<section id="glossario">
+  <h2>Glossário</h2>
+  <dl class="gloss">
+    <dt>Padrão de acesso</dt><dd>Como a aplicação lê e grava os dados: por quais campos busca, com que frequência, em que volume.</dd>
+    <dt>Latência</dt><dd>Tempo entre fazer a request e receber a resposta.</dd>
+    <dt>Throughput</dt><dd>Quanto trabalho o sistema processa por segundo.</dd>
+    <dt>Escala vertical</dt><dd>Crescer usando uma máquina maior.</dd>
+    <dt>Escala horizontal</dt><dd>Crescer adicionando mais máquinas.</dd>
+    <dt>Sharding</dt><dd>Dividir os dados entre vários servidores por uma chave.</dd>
+    <dt>Lookup</dt><dd>Busca direta por uma chave.</dd>
+    <dt>Feature flag</dt><dd>Chave que liga ou desliga uma funcionalidade sem novo deploy.</dd>
+    <dt>Rate limit</dt><dd>Limite de requests por cliente num intervalo de tempo.</dd>
+    <dt>Idempotência</dt><dd>Fazer a mesma operação duas vezes tem o mesmo efeito de fazer uma.</dd>
+    <dt>Data warehouse</dt><dd>Banco feito para análises sobre grandes volumes históricos.</dd>
+    <dt>Embedding</dt><dd>Vetor de números que representa o significado de um texto ou imagem.</dd>
+    <dt>RAG</dt><dd>Retrieval-augmented generation: buscar contexto relevante e entregar ao modelo antes de ele responder.</dd>
+    <dt>Fonte da verdade</dt><dd>O lugar onde está a versão oficial do dado; os outros são cópias.</dd>
+    <dt>Cache-aside</dt><dd>Padrão em que a aplicação consulta o cache e, no miss, o banco.</dd>
+  </dl>
+</section>
+
+<footer>
+  <p><strong>Próximo episódio:</strong> o que fazer quando o seu banco começa a ficar lento. Índices, cache, réplicas de leitura e mais.</p>
+  <p>Série "O que estudar na era da IA para ser um bom programador", no canal <a href="https://www.youtube.com/@CaroolDev" target="_blank" rel="noopener">@CaroolDev</a>.</p>
+</footer>
+</div>
+
+<a class="wm" href="https://www.youtube.com/@CaroolDev" target="_blank" rel="noopener" aria-label="Canal CaroolDev no YouTube"><i></i>@CaroolDev</a>
+
+<script>
+(function () {
+  var qs = document.querySelectorAll('#quiz .q'), done = 0, right = 0, score = document.getElementById('score');
+  qs.forEach(function (q) {
+    q.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (q.dataset.done) return;
+        q.dataset.done = '1'; done++;
+        var ok = b.textContent === q.dataset.a; if (ok) right++;
+        q.querySelectorAll('button').forEach(function (x) { if (x.textContent === q.dataset.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); x.setAttribute('aria-disabled', 'true'); });
+        q.querySelector('.why').hidden = false;
+        score.textContent = done < qs.length ? done + ' de ' + qs.length + ' respondidas' : 'Você acertou ' + right + ' de ' + qs.length + '.';
+      });
+    });
+  });
+})();
+</script>
+
+</body></html>
